@@ -2,7 +2,7 @@ from django.shortcuts import render
 from .models import Course, Lesson, Test, AnswerOption
 from .serializers import CourseSerializer
 from django.http import JsonResponse
-from rest_framework.decorators import api_view
+from django.views.decorators.http import require_GET
 
 # Create your views here.
 def success(data):
@@ -11,7 +11,7 @@ def success(data):
 def error(message):
     return JsonResponse({"status":'error','message':message}, safe=False)
 
-@api_view(['GET'])
+@require_GET
 def get_all(request):
     try:
         all_courses = Course.objects.all()

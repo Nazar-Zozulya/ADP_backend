@@ -18,10 +18,13 @@ from django.contrib import admin
 from django.urls import path
 from django.conf.urls.static import static
 from ADP_backend import settings
-from course_app import views
+from course_app import views as coruse_views
+from user_app import views as user_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('courses/all', views.get_all)
+    path('courses/all', coruse_views.get_all),
+    path('users/register', user_views.register),
+    path('users/login', user_views.login),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
  

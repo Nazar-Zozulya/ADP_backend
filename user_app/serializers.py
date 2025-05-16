@@ -1,12 +1,12 @@
 from ADP_backend import settings
 from rest_framework import serializers
-from .models import User
+from .models import CustomUser
 
 class UserSerializer(serializers.ModelSerializer):
     image = serializers.SerializerMethodField()
     
     class Meta:
-        model = User
+        model = CustomUser
         fields = '__all__'
         
     def get_image(self, obj):
