@@ -1,7 +1,9 @@
-from ADP_backend import settings
 from rest_framework import serializers
 from user_app.serializers import UserSerializer
 from .models import Course
+from django.contrib.auth import get_user_model
+
+User = get_user_model()
 
 
 class CourseSerializer(serializers.ModelSerializer):

@@ -15,7 +15,7 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import include, path
 from django.conf.urls.static import static
 from ADP_backend import settings
 from course_app import views as coruse_views
@@ -24,7 +24,9 @@ from user_app import views as user_views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('courses/all', coruse_views.get_all),
-    path('users/register', user_views.register),
-    path('users/login', user_views.login),
+    path('api/users', include('user_app.urls')),
+    # path('users/register', user_views.register),
+    # path('users/login', user_views.login),
+    # path('users/me', user_views.UserInfoView.as_view())
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
  

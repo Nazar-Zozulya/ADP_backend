@@ -39,12 +39,11 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'corsheaders',
-    'rest_framework',
-    'rest_framework.authtoken',
     'course_app',
     'user_app',
-    
+    'corsheaders',
+    'rest_framework',
+    'knox',
 ]
 
 MIDDLEWARE = [
@@ -77,8 +76,11 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'ADP_backend.wsgi.application'
 
-AUTH_USER_MODEL = 'user_app.CustomUser'
+AUTH_USER_MODEL = 'user_app.User'
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',)
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
