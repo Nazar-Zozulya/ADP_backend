@@ -1,6 +1,6 @@
 from ADP_backend import settings
 from rest_framework import serializers
-from django.contrib.auth import get_user_model
+from django.contrib.auth import authenticate, get_user_model
 
 User = get_user_model()
 
@@ -33,3 +33,24 @@ class RegisterSerializer(serializers.ModelSerializer):
             name=validated_data.get('name', ''),
             surname=validated_data.get('surname', ''))
         return user
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(write_only=True)
+
+    def validate(self, data):
+        email = data.get('email')
+        password = data.get('password')
+
+        try:
+            user = User.objects.get(email=email)
+        except User.DoesNotExist:
+            raise serializers.ValidationError("Пользователь с таким email не найден.")
+
+        user = authenticate(request=self.context.get("request"), username=email, password=password)
+
+        if not user:
+            raise serializers.ValidationError("Неверный email или пароль.")
+
+        data['user'] = user
+        return data

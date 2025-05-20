@@ -1,7 +1,41 @@
-from rest_framework import generics, permissions
+from rest_framework import generics
 from rest_framework.response import Response
 from knox.models import AuthToken
-from .serializers import UserSerializer, RegisterSerializer
+from .serializers import UserSerializer, RegisterSerializer, LoginSerializer
+from knox.views import LoginView as KnoxLoginView
+from rest_framework.views import APIView
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from django.contrib.auth import login
+from rest_framework.authtoken.serializers import AuthTokenSerializer
+
+class LoginAPI(KnoxLoginView):
+    permission_classes = [AllowAny]
+    serializer_class = LoginSerializer
+
+    def post(self, request, format=None):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+
+        login(request, user)
+
+        # Создаём токен через Knox
+        response = super().post(request)
+
+        # Достаём токен из response
+        token = response.data.get('token')
+        expiry = response.data.get('expiry')
+
+        # Сериализуем пользователя
+        user_data = UserSerializer(user, context={'request': request}).data
+
+        # Возвращаем полный ответ с токеном и данными пользователя
+        return Response({
+            "token": token,
+            "expiry": expiry,
+            "user": user_data,
+        })
+
 
 class RegisterAPI(generics.GenericAPIView):
     serializer_class=RegisterSerializer
@@ -12,5 +46,13 @@ class RegisterAPI(generics.GenericAPIView):
         serializer.is_valid(raise_exception=True)
         
         user = serializer.save()
-        return Response({ "muser": UserSerializer(user, context=self.get_serializer_context()).data,
+        return Response({ "user": UserSerializer(user, context=self.get_serializer_context()).data,
                          "token": AuthToken.objects.create(user)[1] })
+        
+
+class ProfileAPI(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializer = UserSerializer(request.user, context={'request': request})
+        return Response(serializer.data)
