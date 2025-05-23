@@ -7,7 +7,7 @@ User = get_user_model()
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    author = UserSerializer()
+    # author = UserSerializer()
     
     image = serializers.SerializerMethodField()
     
@@ -20,5 +20,5 @@ class CourseSerializer(serializers.ModelSerializer):
         if obj.image and hasattr(obj.image, 'url'):
             if request:
                 return request.build_absolute_uri(obj.image.url)
-            return f'http://localhost:8000{obj.image.url}'  # fallback если request нет
+            return f'http://localhost:8000{obj.image.url}'
         return None
