@@ -36,21 +36,27 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 class LoginSerializer(serializers.Serializer):
     email = serializers.EmailField()
-    password = serializers.CharField(write_only=True)
+    password = serializers.CharField()
+    
+    
 
     def validate(self, data):
-        email = data.get('email')
-        password = data.get('password')
+        user = authenticate(**data)
+        if user and user.is_active:
+            return user
+        raise serializers.ValidationError('Incorrent data')
+#         email = data.get('email')
+#         password = data.get('password')
 
-        try:
-            user = User.objects.get(email=email)
-        except User.DoesNotExist:
-            raise serializers.ValidationError("Пользователь с таким email не найден.")
+#         try:
+#             user = User.objects.get(email=email)
+#         except User.DoesNotExist:
+#             raise serializers.ValidationError("Пользователь с таким email не найден.")
 
-        user = authenticate(request=self.context.get("request"), username=email, password=password)
+#         user = authenticate(request=self.context.get("request"), username=email, password=password)
 
-        if not user:
-            raise serializers.ValidationError("Неверный email или пароль.")
+#         if not user:
+#             raise serializers.ValidationError("Неверный email или пароль.")
 
-        data['user'] = user
-        return data
+#         data['user'] = user
+#         return data
