@@ -7,13 +7,15 @@ User = get_user_model()
 
 
 class CourseSerializer(serializers.ModelSerializer):
-    # author = UserSerializer()
+    author = UserSerializer()
+    # students = UserSerializer(many=True)
+    
     
     image = serializers.SerializerMethodField()
-    
+        
     class Meta:
         model = Course
-        fields = '__all__'
+        fields = ['id','image','name','description','author']
     
     def get_image(self, obj):
         request = self.context.get('request')
