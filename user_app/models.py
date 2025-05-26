@@ -30,7 +30,8 @@ class User(AbstractUser):
     username = None  # Убираем username
     first_name = None
     last_name = None
-
+    
+    
     name = models.CharField(max_length=255)
     surname = models.CharField(max_length=255)
     email = models.EmailField(unique=True)

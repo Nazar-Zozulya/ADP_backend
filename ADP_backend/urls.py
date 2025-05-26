@@ -23,8 +23,8 @@ from user_app import views as user_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('courses/all', coruse_views.get_all),
     path('', include('user_app.urls')),
+    path('', include('course_app.urls')),
     # path('users/register', user_views.register),
     # path('users/login', user_views.login),
     # path('users/me', user_views.UserInfoView.as_view())

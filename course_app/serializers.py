@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from user_app.serializers import UserSerializer
+from user_app.serializers import StudentSerializer, UserSerializer
 from .models import Course
 from django.contrib.auth import get_user_model
 
@@ -8,14 +8,14 @@ User = get_user_model()
 
 class CourseSerializer(serializers.ModelSerializer):
     author = UserSerializer()
-    # students = UserSerializer(many=True)
+    students = StudentSerializer(many=True)
     
     
     image = serializers.SerializerMethodField()
         
     class Meta:
         model = Course
-        fields = ['id','image','name','description','author']
+        fields = ['id','image','name','description','author','students']
     
     def get_image(self, obj):
         request = self.context.get('request')

@@ -11,7 +11,11 @@ class AnswerOptionInline(admin.TabularInline):  # или admin.StackedInline
 class TestAdmin(admin.ModelAdmin):
     inlines = [AnswerOptionInline]
 
+class CourseAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')  # пример: добавь нужные поля
+    filter_horizontal = ('students',)
+
 # Регистрация моделей
-admin.site.register(Course)
+admin.site.register(Course, CourseAdmin)
 admin.site.register(Lesson)
 admin.site.register(Test, TestAdmin)  # <-- используй кастомный TestAdmin

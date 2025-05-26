@@ -8,35 +8,9 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from django.contrib.auth import login
 from rest_framework.authtoken.serializers import AuthTokenSerializer
 
-    # permission_classes = [AllowAny]
-    # serializer_class = LoginSerializer
-
-    # def post(self, request, format=None):
-    #     serializer = self.serializer_class(data=request.data, context={'request': request})
-    #     serializer.is_valid(raise_exception=True)
-    #     user = serializer.validated_data['user']
-
-    #     login(request, user)
-
-    #     # Создаём токен через Knox
-    #     response = super().post(request)
-
-    #     # Достаём токен из response
-    #     token = response.data.get('token')
-    #     expiry = response.data.get('expiry')
-
-    #     # Сериализуем пользователя
-    #     user_data = UserSerializer(user, context={'request': request}).data
-
-    #     # Возвращаем полный ответ с токеном и данными пользователя
-    #     return Response({
-    #         "token": token,
-    #         "expiry": expiry,
-    #         "user": user_data,
-    #     })
-
-
 class RegisterAPI(generics.GenericAPIView):
+    """ API регистрации """
+    
     serializer_class=RegisterSerializer
     
     def post(self, request, *args, **kwargs):
@@ -52,6 +26,9 @@ class RegisterAPI(generics.GenericAPIView):
         
 
 class LoginAPI(generics.GenericAPIView):
+    """ API авторизации """
+
+    
     serializer_class = LoginSerializer
     
     def post(self, request, *args, **kwargs):
@@ -64,11 +41,12 @@ class LoginAPI(generics.GenericAPIView):
             "status": "success",
             "data": AuthToken.objects.create(user)[1]
         })
-        # return Response({ "user": UserSerializer(user, context=self.get_serializer_context()).data,
-        #                  "token": AuthToken.objects.create(user)[1] })
 
 
 class UserAPI(generics.RetrieveAPIView):
+    """ API получения пользователя """
+    
+
     permission_classes = [
         permissions.IsAuthenticated
     ]
@@ -85,10 +63,3 @@ class UserAPI(generics.RetrieveAPIView):
             "status": "success",
             "data": serializer.data
         })
-
-# class ProfileAPI(APIView):
-#     permission_classes = [IsAuthenticated]
-
-#     def get(self, request):
-#         serializer = UserSerializer(request.user, context={'request': request})
-#         return Response(serializer.data)
